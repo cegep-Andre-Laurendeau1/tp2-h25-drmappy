@@ -1,4 +1,4 @@
-package ca.cal.tp1.DTO;
+package ca.cal.tp1.service.DTO;
 
 import ca.cal.tp1.modele.Dvd;
 
@@ -16,11 +16,22 @@ public class DvdDTO extends DocumentDTO {
         this.genre = genre;
     }
 
-    public DvdDTO(Dvd dvd){
+    public DvdDTO(DvdDTO dvd){
         super(dvd.getId(), dvd.getTitre(), dvd.getAnneePublication(), dvd.getNombreExemplaire());
         this.directeur = dvd.getDirecteur();
         this.duree = dvd.getDuree();
         this.genre = dvd.getGenre();
+    }
+    public DvdDTO(String titre, LocalDate anneePublication, int nombreExemplaire, String directeur, int duree, String genre) {
+        super(titre, anneePublication, nombreExemplaire);
+        this.directeur = directeur;
+        this.duree = duree;
+        this.genre = genre;
+    }
+    public Dvd toModele(){
+        if (getId() == null)
+            return new Dvd(getTitre(), getAnneePublication(), getNombreExemplaire(), directeur, duree, genre);
+        return new Dvd(getId(), getTitre(), getAnneePublication(), getNombreExemplaire(), directeur, duree, genre);
     }
 
     public String getDirecteur() {
@@ -42,7 +53,7 @@ public class DvdDTO extends DocumentDTO {
     @Override
     public String toString() {
         return "Dvd{" +
-                "id=" + getId() +
+                "id=" + getId()+
                 ", titre='" + getTitre() + '\'' +
                 ", anneePublication=" + getAnneePublication() +
                 ", nombreExemplaire=" + getNombreExemplaire() +

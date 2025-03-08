@@ -1,10 +1,9 @@
 package ca.cal.tp1.modele;
 
+import ca.cal.tp1.service.DTO.DocumentDTO;
 import jakarta.persistence.*;
 import lombok.NoArgsConstructor;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 @Entity
@@ -24,6 +23,13 @@ public abstract class Document {
         this.anneePublication = anneePublication;
         this.nombreExemplaire = nombreExemplaire;
     }
+    public Document(Long id, String titre, LocalDate anneePublication, int nombreExemplaire){
+        this.titre = titre;
+        this.anneePublication = anneePublication;
+        this.nombreExemplaire = nombreExemplaire;
+        this.id = id;
+    }
+    public abstract DocumentDTO toDTO();
     public Long getId() {
         return id;
     }

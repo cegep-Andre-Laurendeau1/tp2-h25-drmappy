@@ -1,5 +1,6 @@
-package ca.cal.tp1.DTO;
+package ca.cal.tp1.service.DTO;
 
+import ca.cal.tp1.modele.Document;
 import ca.cal.tp1.modele.Livre;
 
 import java.time.LocalDate;
@@ -18,13 +19,24 @@ public class LivreDTO extends DocumentDTO {
         this.editeur = editeur;
         this.nombrePages = nombrePages;
     }
-    public LivreDTO(Livre livre){
+    public LivreDTO(LivreDTO livre){
         super(livre.getId(), livre.getTitre(), livre.getAnneePublication(), livre.getNombreExemplaire());
         this.ISBN = livre.getISBN();
         this.auteur = livre.getAuteur();
         this.editeur = livre.getEditeur();
         this.nombrePages = livre.getNombrePages();
     }
+    public Livre toLivre(){
+        return new Livre(getId(), getTitre(), getAnneePublication(), getNombreExemplaire(), ISBN, auteur, editeur, nombrePages);
+    }
+    public LivreDTO(String titre, LocalDate anneePublication, int nombreExemplaire, String ISBN, String auteur, String editeur, int nombrePages){
+        super(titre, anneePublication, nombreExemplaire);
+        this.ISBN = ISBN;
+        this.auteur = auteur;
+        this.editeur = editeur;
+        this.nombrePages = nombrePages;
+    }
+
 
     public String getISBN() {
         return ISBN;
@@ -47,9 +59,16 @@ public class LivreDTO extends DocumentDTO {
     }
 
     @Override
+    public Document toModele() {
+        if (getId() == null)
+            return new Livre(getTitre(), getAnneePublication(), getNombreExemplaire(), ISBN, auteur, editeur, nombrePages);
+        return new Livre(getId(), getTitre(), getAnneePublication(), getNombreExemplaire(), ISBN, auteur, editeur, nombrePages);
+    }
+
+    @Override
     public String toString() {
         return "Livre{" +
-                "id=" + getId() +
+                "id=" + getId()+
                 ", titre='" + getTitre() + '\'' +
                 ", anneePublication=" + getAnneePublication() +
                 ", nombreExemplaire=" + getNombreExemplaire() +

@@ -1,41 +1,49 @@
 package ca.cal.tp1.persistance;
 
+import ca.cal.tp1.modele.Emprunteur;
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmpruntDetailsDTO;
+import ca.cal.tp1.service.DTO.EmprunteurDTO;
 import ca.cal.tp1.modele.Document;
 import ca.cal.tp1.modele.Emprunt;
 import ca.cal.tp1.modele.EmpruntDetails;
-import ca.cal.tp1.modele.Emprunteur;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-public class EmpruntRepositoryJPA implements InterfaceRepository<Emprunt> {
+public class EmpruntRepositoryJPA implements InterfaceRepository<EmpruntDTO> {
     private final EntityManagerFactory entityManagerFactory=
             Persistence.createEntityManagerFactory("orders.pu");
     @Override
-    public void save(Emprunt emprunt) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
+    public void save(EmpruntDTO emprunt) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
-            Emprunt empruntSansDetails = new Emprunt(emprunt.getDateEmprunt(), emprunt.getStatus(), emprunt.getEmprunteur());
+            Emprunteur emprunteur = emprunt.getEmprunteur().toModele();
+            entityManager.persist(emprunteur); // Save the Emprunteur instance first
+            Emprunt empruntSansDetails = new Emprunt(emprunt.getDateEmprunt(), emprunt.getStatus(), emprunteur);
             entityManager.persist(empruntSansDetails);
 
-            for (int i = 0; i < emprunt.getEmpruntDetails().toArray().length; i++) {
-                EmpruntDetails empruntDetailsCourant = emprunt.getEmpruntDetails().get(i);
+            for (EmpruntDetailsDTO detailsDTO : emprunt.getEmpruntDetails()) {
+                EmpruntDetails empruntDetailsCourant = detailsDTO.toModele();
                 Document documentCourant = empruntDetailsCourant.getDocument();
-                documentCourant.setNombreExemplaire(documentCourant.getNombreExemplaire()-1);
+                documentCourant.setNombreExemplaire(documentCourant.getNombreExemplaire() - 1);
+                EmpruntDetails empruntDetails = new EmpruntDetails(empruntDetailsCourant.getDateRetourPrevue(), empruntDetailsCourant.getDateRetourActuelle(), empruntDetailsCourant.getStatus(), empruntSansDetails, empruntDetailsCourant.getDocument());
+                entityManager.persist(empruntDetails);
 
-                entityManager.persist(new EmpruntDetails(empruntDetailsCourant.getDateRetourPrevue(), empruntDetailsCourant.getStatus(), empruntSansDetails,empruntDetailsCourant.getDocument()));
                 entityManager.merge(documentCourant);
             }
             entityManager.getTransaction().commit();
         }
     }
 
+
     @Override
-    public Emprunt get(Long id) {
+    public EmpruntDTO get(Long id) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Emprunt> query = entityManager.createQuery(
@@ -44,14 +52,14 @@ public class EmpruntRepositoryJPA implements InterfaceRepository<Emprunt> {
             query.setParameter("id", id);
             query.getSingleResult();
             entityManager.getTransaction().commit();
-            return query.getSingleResult();
+            return query.getSingleResult().toEmpruntDTO();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public List<Emprunt> get(Emprunteur emprunteur) {
+    public List<EmpruntDTO> get(EmprunteurDTO emprunteur) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Emprunt> query = entityManager.createQuery(
@@ -60,7 +68,11 @@ public class EmpruntRepositoryJPA implements InterfaceRepository<Emprunt> {
             query.setParameter("idEmprunteur", emprunteur.getId());
             query.getResultList();
             entityManager.getTransaction().commit();
-            return query.getResultList();
+            List<EmpruntDTO> empruntDTOS = new ArrayList<>();
+            for (Emprunt emprunt : query.getResultList()) {
+                empruntDTOS.add(emprunt.toEmpruntDTO());
+            }
+            return empruntDTOS;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -68,22 +80,21 @@ public class EmpruntRepositoryJPA implements InterfaceRepository<Emprunt> {
     }
 
     @Override
-    public List<Emprunt> get(Emprunt emprunt) {
+    public List<EmpruntDTO> get(EmpruntDTO emprunt) {
+        return List.of();
+    }
+    @Override
+    public List<EmpruntDTO> get(String titreSubString, LocalDate annePublication) {
         return List.of();
     }
 
     @Override
-    public List<Emprunt> get(String titreSubString, LocalDate annePublication) {
+    public List<EmpruntDTO> get(String titreSubString) {
         return List.of();
     }
 
     @Override
-    public List<Emprunt> get(String titreSubString) {
-        return List.of();
-    }
-
-    @Override
-    public List<Emprunt> get(LocalDate annePublication) {
+    public List<EmpruntDTO> get(LocalDate annePublication) {
         return List.of();
     }
 

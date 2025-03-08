@@ -1,4 +1,4 @@
-package ca.cal.tp1.DTO;
+package ca.cal.tp1.service.DTO;
 
 import ca.cal.tp1.modele.Cd;
 
@@ -17,11 +17,22 @@ public class CdDTO extends DocumentDTO {
         this.duree = duree;
         this.genre = genre;
     }
-    public CdDTO(Cd cd){
+    public CdDTO(CdDTO cd){
         super(cd.getId(), cd.getTitre(), cd.getAnneePublication(), cd.getNombreExemplaire());
         this.artiste = cd.getArtiste();
         this.duree = cd.getDuree();
         this.genre = cd.getGenre();
+    }
+    public CdDTO(String titre, LocalDate anneePublication, int nombreExemplaire, String artiste, int duree, String genre) {
+        super(titre, anneePublication, nombreExemplaire);
+        this.artiste = artiste;
+        this.duree = duree;
+        this.genre = genre;
+    }
+    public Cd toModele(){
+        if(getId() == null)
+            return new Cd( getTitre(), getAnneePublication(), getNombreExemplaire(), artiste, duree, genre);
+        return new Cd(getId(), getTitre(), getAnneePublication(), getNombreExemplaire(), artiste, duree, genre);
     }
 
     public int getDuree() {
@@ -43,7 +54,7 @@ public class CdDTO extends DocumentDTO {
     @Override
     public String toString() {
         return "Cd{" +
-                "id=" + getId() +
+                "id=" + getId()+
                 ", titre='" + getTitre() + '\'' +
                 ", anneePublication=" + getAnneePublication() +
                 ", nombreExemplaire=" + getNombreExemplaire() +

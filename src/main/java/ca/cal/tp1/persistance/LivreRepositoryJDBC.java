@@ -1,8 +1,7 @@
 package ca.cal.tp1.persistance;
 
-import ca.cal.tp1.DTO.LivreDTO;
-import ca.cal.tp1.modele.Emprunt;
-import ca.cal.tp1.modele.Emprunteur;
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmprunteurDTO;
 import ca.cal.tp1.modele.Livre;
 
 import java.sql.PreparedStatement;
@@ -80,12 +79,12 @@ public class LivreRepositoryJDBC extends RepositoryParent implements InterfaceRe
     }
 
     @Override
-    public List<Livre> get(Emprunteur emprunteur) {
+    public List<Livre> get(EmprunteurDTO emprunteur) {
         return List.of();
     }
 
     @Override
-    public List<Livre> get(Emprunt emprunt) {
+    public List<Livre> get(EmpruntDTO emprunt) {
         return List.of();
     }
 }

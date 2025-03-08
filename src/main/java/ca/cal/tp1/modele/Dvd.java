@@ -1,12 +1,11 @@
 package ca.cal.tp1.modele;
 
+import ca.cal.tp1.service.DTO.DvdDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import lombok.NoArgsConstructor;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalDate;
 
 @Entity
@@ -45,6 +44,13 @@ public class Dvd extends Document{
     public String getGenre() {
         return genre;
     }
+
+    @Override
+    public DvdDTO toDTO() {
+        return new DvdDTO(this.id, this.getTitre(), this.getAnneePublication(), this.getNombreExemplaire(), this.directeur, this.duree, this.genre);
+    }
+
+
 
     public int getDureeEmpruntSem() {
         return dureeEmpruntSem;

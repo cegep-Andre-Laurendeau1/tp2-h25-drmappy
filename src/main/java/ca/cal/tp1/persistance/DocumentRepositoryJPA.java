@@ -1,28 +1,31 @@
 package ca.cal.tp1.persistance;
 
+import ca.cal.tp1.service.DTO.DocumentDTO;
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmprunteurDTO;
 import ca.cal.tp1.modele.Document;
-import ca.cal.tp1.modele.Emprunt;
-import ca.cal.tp1.modele.Emprunteur;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
-public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
+public class DocumentRepositoryJPA implements InterfaceRepository<DocumentDTO> {
     private final EntityManagerFactory entityManagerFactory=
             Persistence.createEntityManagerFactory("orders.pu");
     @Override
-    public void save(Document document) {
+    public void save(DocumentDTO document) {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
+            Document documentModele = document.toModele();
             entityManager.getTransaction().begin();
-            if(get(document.getId()) != null){
+            if(get(documentModele.getId()) != null){
                 entityManager.merge(document);
             }
             else {
-                entityManager.persist(document);
+                entityManager.persist(documentModele);
             }
 
             entityManager.getTransaction().commit();
@@ -30,7 +33,7 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
     }
 
     @Override
-    public Document get(Long id) {
+    public DocumentDTO get(Long id) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Document> query = entityManager.createQuery(
@@ -39,7 +42,7 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
             query.setParameter("id", id);
             query.getSingleResult();
             entityManager.getTransaction().commit();
-            return query.getSingleResult();
+            return query.getSingleResult().toDTO();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -52,16 +55,17 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
     }
 
     @Override
-    public List<Document> get(Emprunteur emprunteur) {
+    public List<DocumentDTO> get(EmprunteurDTO emprunteur) {
         return List.of();
     }
 
     @Override
-    public List<Document> get(Emprunt emprunt) {
+    public List<DocumentDTO> get(EmpruntDTO emprunt) {
         return List.of();
     }
 
-    public List<Document> get(String titreSubString, LocalDate annePublication) {
+
+    public List<DocumentDTO> get(String titreSubString, LocalDate annePublication) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Document> query = entityManager.createQuery(
@@ -71,7 +75,11 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
             query.setParameter("titreSubString", "%"+titreSubString+"%");
             query.setParameter("anneePublication", annePublication);
             entityManager.getTransaction().commit();
-            return query.getResultList();
+            List<DocumentDTO> doc = new ArrayList<>();
+            for (int i = 0; i < query.getResultList().toArray().length; i++) {
+                doc.add(query.getResultList().get(i).toDTO());
+            }
+            return doc;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -79,7 +87,7 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
     }
 
     @Override
-    public List<Document> get(String titreSubString) {
+    public List<DocumentDTO> get(String titreSubString) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Document> query = entityManager.createQuery(
@@ -87,7 +95,11 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
                             "WHERE document.titre LIKE :titreSubString ", Document.class);
             query.setParameter("titreSubString", "%"+titreSubString+"%");
             entityManager.getTransaction().commit();
-            return query.getResultList();
+            List<DocumentDTO> doc = new ArrayList<>();
+            for (int i = 0; i < query.getResultList().toArray().length; i++) {
+                doc.add(query.getResultList().get(i).toDTO());
+            }
+            return doc;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -95,7 +107,7 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
     }
 
     @Override
-    public List<Document> get(LocalDate annePublication) {
+    public List<DocumentDTO> get(LocalDate annePublication) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Document> query = entityManager.createQuery(
@@ -103,7 +115,11 @@ public class DocumentRepositoryJPA implements InterfaceRepository<Document> {
                             "WHERE document.anneePublication = :anneePublication ", Document.class);
             query.setParameter("anneePublication", annePublication);
             entityManager.getTransaction().commit();
-            return query.getResultList();
+            List<DocumentDTO> doc = new ArrayList<>();
+            for (int i = 0; i < query.getResultList().toArray().length; i++) {
+                doc.add(query.getResultList().get(i).toDTO());
+            }
+            return doc;
         } catch (Exception e) {
             e.printStackTrace();
             return null;

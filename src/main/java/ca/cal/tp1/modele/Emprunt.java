@@ -1,11 +1,12 @@
 package ca.cal.tp1.modele;
 
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmpruntDetailsDTO;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -20,9 +21,9 @@ public class Emprunt {
     private LocalDate dateEmprunt;
     private String status;
     @ManyToOne
-    private  Emprunteur emprunteur;
+    private  Emprunteur emprunteur = null;
     @OneToMany
-    private List<EmpruntDetails> empruntDetails;
+    private List<EmpruntDetails> empruntDetails = new ArrayList<>();
 
     public Emprunt(LocalDate dateEmprunt, String status, List<EmpruntDetails> empruntDetails, Emprunteur emprunteur) {
         this.dateEmprunt = dateEmprunt;
@@ -35,11 +36,21 @@ public class Emprunt {
         this.status = status;
         this.emprunteur = emprunteur;
     }
+    public EmpruntDTO toEmpruntDTO() {
+        List<EmpruntDetailsDTO> empruntDetailsDTO = new ArrayList<>();
+        for (EmpruntDetails empruntDetails : this.empruntDetails) {
+            empruntDetailsDTO.add(empruntDetails.toEmpruntDetailsDTO());
+        }
+        return new EmpruntDTO(this.dateEmprunt, this.status, empruntDetailsDTO, this.emprunteur.toEmprunteurDTO());
+    }
     public String toString() {
         return "Emprunt{" +
                 "id=" + id +
                 ", dateEmprunt=" + dateEmprunt +
                 ", status='" + status + '\'' +
+                ", emprunteur=" + emprunteur +
+                ", empruntDetails=" + empruntDetails +
+
                 '}';
     }
 }

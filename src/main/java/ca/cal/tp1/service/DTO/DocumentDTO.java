@@ -1,4 +1,6 @@
-package ca.cal.tp1.DTO;
+package ca.cal.tp1.service.DTO;
+
+import ca.cal.tp1.modele.Document;
 
 import java.time.LocalDate;
 
@@ -14,7 +16,13 @@ public abstract class DocumentDTO {
         this.anneePublication = anneePublication;
         this.nombreExemplaire = nombreExemplaire;
     }
-    public long getId() {
+    public DocumentDTO(String titre, LocalDate anneePublication, int nombreExemplaire){
+        this.titre = titre;
+        this.anneePublication = anneePublication;
+        this.nombreExemplaire = nombreExemplaire;
+    }
+    public abstract Document toModele();
+    public Long getId() {
         return id;
     }
 
@@ -54,5 +62,9 @@ public abstract class DocumentDTO {
                 ", anneePublication=" + anneePublication +
                 ", nombreExemplaire=" + nombreExemplaire +
                 '}';
+    }
+
+    public int getDureeEmpruntSem() {
+        return 0;
     }
 }

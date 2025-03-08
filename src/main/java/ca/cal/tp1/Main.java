@@ -69,9 +69,11 @@ public class Main {
         System.out.println("###########################");
         List<Long> list = new ArrayList<>();
         list.add(1L);
-        list.add(2L);
         emprunteurServiceJPA.emprunterDocument(list, 1L);
+        list.add(2L);
         list.add(3L);
+        emprunteurServiceJPA.emprunterDocument(list, 1L);
+        list.add(4L);
         emprunteurServiceJPA.emprunterDocument(list, 1L);
 
         System.out.println("################################");

@@ -1,7 +1,7 @@
 package ca.cal.tp1.persistance;
 
-import ca.cal.tp1.modele.Emprunt;
-import ca.cal.tp1.modele.Emprunteur;
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmprunteurDTO;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +19,6 @@ public interface InterfaceRepository <T> {
 
     public void delete(Long id);
 
-    public List<T> get(Emprunteur emprunteur);
-    public List<T> get(Emprunt emprunt);
+    public List<T> get(EmprunteurDTO emprunteur);
+    public List<T> get(EmpruntDTO emprunt);
 }

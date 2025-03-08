@@ -1,10 +1,9 @@
 package ca.cal.tp1.persistance;
 
 
-import ca.cal.tp1.DTO.CdDTO;
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmprunteurDTO;
 import ca.cal.tp1.modele.Cd;
-import ca.cal.tp1.modele.Emprunt;
-import ca.cal.tp1.modele.Emprunteur;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -81,12 +80,12 @@ public class CdRepositoryJDBC extends RepositoryParent implements InterfaceRepos
     }
 
     @Override
-    public List<Cd> get(Emprunteur emprunteur) {
+    public List<Cd> get(EmprunteurDTO emprunteur) {
         return List.of();
     }
 
     @Override
-    public List<Cd> get(Emprunt emprunt) {
+    public List<Cd> get(EmpruntDTO emprunt) {
         return List.of();
     }
 }

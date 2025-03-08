@@ -1,9 +1,8 @@
 package ca.cal.tp1.persistance;
 
-import ca.cal.tp1.modele.Cd;
-import ca.cal.tp1.modele.Emprunt;
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmprunteurDTO;
 import ca.cal.tp1.modele.Emprunteur;
-import ca.cal.tp1.service.EmprunteurService;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
@@ -12,21 +11,21 @@ import jakarta.persistence.TypedQuery;
 import java.time.LocalDate;
 import java.util.List;
 
-public class EmprunteurRepositoryJPA implements InterfaceRepository<Emprunteur> {
+public class EmprunteurRepositoryJPA implements InterfaceRepository<EmprunteurDTO> {
     private final EntityManagerFactory entityManagerFactory=
             Persistence.createEntityManagerFactory("orders.pu");
     @Override
-    public void save(Emprunteur emprunteur) {
+    public void save(EmprunteurDTO emprunteur) {
 
         try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
-            entityManager.persist(emprunteur);
+            entityManager.persist(emprunteur.toModele());
             entityManager.getTransaction().commit();
         }
     }
 
     @Override
-    public Emprunteur get(Long id) {
+    public EmprunteurDTO get(Long id) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Emprunteur> query = entityManager.createQuery(
@@ -35,7 +34,7 @@ public class EmprunteurRepositoryJPA implements InterfaceRepository<Emprunteur> 
             query.setParameter("id", id);
             query.getSingleResult();
             entityManager.getTransaction().commit();
-            return query.getSingleResult();
+            return query.getSingleResult().toEmprunteurDTO();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -43,17 +42,17 @@ public class EmprunteurRepositoryJPA implements InterfaceRepository<Emprunteur> 
     }
 
     @Override
-    public List<Emprunteur> get(String titreSubString, LocalDate annePublication) {
+    public List<EmprunteurDTO> get(String titreSubString, LocalDate annePublication) {
         return List.of();
     }
 
     @Override
-    public List<Emprunteur> get(String titreSubString) {
+    public List<EmprunteurDTO> get(String titreSubString) {
         return List.of();
     }
 
     @Override
-    public List<Emprunteur> get(LocalDate annePublication) {
+    public List<EmprunteurDTO> get(LocalDate annePublication) {
         return List.of();
     }
 
@@ -63,12 +62,14 @@ public class EmprunteurRepositoryJPA implements InterfaceRepository<Emprunteur> 
     }
 
     @Override
-    public List<Emprunteur> get(Emprunteur emprunteur) {
+    public List<EmprunteurDTO> get(EmprunteurDTO emprunteur) {
         return List.of();
     }
 
     @Override
-    public List<Emprunteur> get(Emprunt emprunt) {
+    public List<EmprunteurDTO> get(EmpruntDTO emprunt) {
         return List.of();
     }
+
+
 }

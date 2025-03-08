@@ -1,5 +1,6 @@
 package ca.cal.tp1.modele;
 
+import ca.cal.tp1.service.DTO.LivreDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -30,8 +31,7 @@ public class Livre extends Document {
         this.nombrePages = nombrePages;
     }
     public Livre(Long id, String titre, LocalDate anneePublication, int nombreExemplaire, String ISBN, String auteur, String editeur, int nombrePages) {
-        super(titre, anneePublication, nombreExemplaire);
-        this.id = id;
+        super(id, titre, anneePublication, nombreExemplaire);
         this.ISBN = ISBN;
         this.auteur = auteur;
         this.editeur = editeur;
@@ -53,6 +53,12 @@ public class Livre extends Document {
     public int getNombrePages() {
         return nombrePages;
     }
+
+    @Override
+    public LivreDTO toDTO() {
+        return new LivreDTO(this.id, this.getTitre(), this.getAnneePublication(), this.getNombreExemplaire(), this.ISBN, this.auteur, this.editeur, this.nombrePages);
+    }
+
 
     public int getDureeEmpruntSem() {
         return dureeEmpruntSem;

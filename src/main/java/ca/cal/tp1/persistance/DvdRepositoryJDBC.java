@@ -1,9 +1,8 @@
 package ca.cal.tp1.persistance;
 
-import ca.cal.tp1.DTO.DvdDTO;
+import ca.cal.tp1.service.DTO.EmpruntDTO;
+import ca.cal.tp1.service.DTO.EmprunteurDTO;
 import ca.cal.tp1.modele.Dvd;
-import ca.cal.tp1.modele.Emprunt;
-import ca.cal.tp1.modele.Emprunteur;
 
 import java.sql.PreparedStatement;
 import java.time.LocalDate;
@@ -78,12 +77,12 @@ public class DvdRepositoryJDBC extends RepositoryParent implements InterfaceRepo
     }
 
     @Override
-    public List<Dvd> get(Emprunteur emprunteur) {
+    public List<Dvd> get(EmprunteurDTO emprunteur) {
         return List.of();
     }
 
     @Override
-    public List<Dvd> get(Emprunt emprunt) {
+    public List<Dvd> get(EmpruntDTO emprunt) {
         return List.of();
     }
 }
