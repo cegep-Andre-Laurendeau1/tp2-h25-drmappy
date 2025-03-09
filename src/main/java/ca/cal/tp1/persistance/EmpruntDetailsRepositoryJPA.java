@@ -1,5 +1,6 @@
 package ca.cal.tp1.persistance;
 
+import ca.cal.tp1.modele.Emprunteur;
 import ca.cal.tp1.service.DTO.EmpruntDTO;
 import ca.cal.tp1.service.DTO.EmprunteurDTO;
 import ca.cal.tp1.modele.Emprunt;
@@ -17,15 +18,26 @@ import java.util.List;
 public class EmpruntDetailsRepositoryJPA implements InterfaceRepository<EmpruntDetailsDTO> {
     private final EntityManagerFactory entityManagerFactory=
             Persistence.createEntityManagerFactory("orders.pu");
+
     @Override
-    public void save(EmpruntDetailsDTO EmpruntDetailsDTO) {
-        try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
+    public void save(EmpruntDetailsDTO empruntDetailsDTO) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
-            if(get(EmpruntDetailsDTO.getId()) != null){
-                entityManager.merge(EmpruntDetailsDTO.toModele());
+
+            Emprunt emprunt = empruntDetailsDTO.getEmprunt().toModele();
+            if (emprunt.getId() == null) {
+                entityManager.persist(emprunt); // Ensure Emprunt is saved if it is new
+            } else {
+                emprunt = entityManager.merge(emprunt); // Merge the detached Emprunt instance
             }
-            else {
-                entityManager.persist(EmpruntDetailsDTO.toModele());
+
+            EmpruntDetails empruntDetails = empruntDetailsDTO.toModele();
+            empruntDetails.setEmprunt(emprunt); // Set the saved or merged Emprunt instance
+
+            if (get(empruntDetailsDTO.getId()) != null) {
+                entityManager.merge(empruntDetails);
+            } else {
+                entityManager.persist(empruntDetails);
             }
 
             entityManager.getTransaction().commit();
@@ -55,8 +67,8 @@ public class EmpruntDetailsRepositoryJPA implements InterfaceRepository<EmpruntD
             TypedQuery<EmpruntDetails> query = entityManager.createQuery(
                     "SELECT EmpruntDetails FROM EmpruntDetails EmpruntDetails " +
                             "WHERE EmpruntDetails.emprunt = :emprunt", EmpruntDetails.class);
+
             query.setParameter("emprunt", emprunt);
-            query.getResultList();
             entityManager.getTransaction().commit();
             List<EmpruntDetailsDTO> empruntDetailsDTOS = new ArrayList<>();
             for (int i = 0; i < query.getResultList().toArray().length; i++) {
@@ -96,7 +108,26 @@ public class EmpruntDetailsRepositoryJPA implements InterfaceRepository<EmpruntD
 
     @Override
     public List<EmpruntDetailsDTO> get(EmpruntDTO emprunt) {
-        return List.of();
+        List<EmpruntDetailsDTO> e = new ArrayList<>();
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
+            entityManager.getTransaction().begin();
+            Emprunt empruntEntity = emprunt.toModele();
+            if (empruntEntity.getId() == null) {
+                entityManager.persist(empruntEntity); // Ensure Emprunt is saved if it is new
+            } else {
+                empruntEntity = entityManager.merge(empruntEntity); // Merge the detached Emprunt instance
+            }
+            TypedQuery<EmpruntDetails> query = entityManager.createQuery(
+                    "SELECT EmpruntDetails FROM EmpruntDetails EmpruntDetails " +
+                            "WHERE EmpruntDetails.emprunt = :emprunt", EmpruntDetails.class);
+            query.setParameter("emprunt", empruntEntity);
+            entityManager.getTransaction().commit();
+            for (int i = 0; i < query.getResultList().toArray().length; i++) {
+                e.add(query.getResultList().get(i).toEmpruntDetailsDTO());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return e;
     }
-
 }

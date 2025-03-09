@@ -8,6 +8,7 @@ import lombok.Setter;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)

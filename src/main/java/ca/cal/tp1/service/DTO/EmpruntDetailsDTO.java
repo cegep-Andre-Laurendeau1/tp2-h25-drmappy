@@ -32,6 +32,14 @@ public class EmpruntDetailsDTO {
         this.emprunt = emprunt;
         this.document = document;
     }
+
+    public EmpruntDetailsDTO(Long id, LocalDate dateRetourPrevue, LocalDate dateRetourActuelle, String status) {
+        this.id = id;
+        this.dateRetourPrevue = dateRetourPrevue;
+        this.dateRetourActuelle = dateRetourActuelle;
+        this.status = status;
+    }
+
     public EmpruntDetails toModele() {
         System.out.println(this.document);
         System.out.println(this.document.toModele());

@@ -32,6 +32,9 @@ public class EmpruntDetails {
     public Document getDocument() {
         return document;
     }
+    public void setDocument(Document document) {
+        this.document = document;
+    }
 
     public EmpruntDetails(LocalDate dateRetourPrevue, LocalDate dateRetourActuelle, String status) {
         this.dateRetourPrevue = dateRetourPrevue;
@@ -67,7 +70,7 @@ public class EmpruntDetails {
     }
 
     public EmpruntDetailsDTO toEmpruntDetailsDTO() {
-        return new EmpruntDetailsDTO(this.dateRetourPrevue, this.dateRetourActuelle, this.status);
+        return new EmpruntDetailsDTO(this.id, this.dateRetourPrevue, this.dateRetourActuelle, this.status);
     }
     public String toString() {
         return "EmpruntDetails{" +
@@ -77,5 +80,9 @@ public class EmpruntDetails {
                 ", status='" + status + '\'' +
                 ", document=" + document +
                 '}';
+    }
+
+    public void setEmprunt(Emprunt emprunt) {
+        this.emprunt = emprunt;
     }
 }
