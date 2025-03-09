@@ -31,7 +31,7 @@ public class CdDTO extends DocumentDTO {
     }
     public Cd toModele(){
         if(getId() == null)
-            return new Cd( getTitre(), getAnneePublication(), getNombreExemplaire(), artiste, duree, genre);
+            return new Cd(getTitre(), getAnneePublication(), getNombreExemplaire(), artiste, duree, genre);
         return new Cd(getId(), getTitre(), getAnneePublication(), getNombreExemplaire(), artiste, duree, genre);
     }
 

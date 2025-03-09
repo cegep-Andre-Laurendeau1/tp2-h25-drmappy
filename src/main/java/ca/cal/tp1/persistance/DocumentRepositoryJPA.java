@@ -22,7 +22,7 @@ public class DocumentRepositoryJPA implements InterfaceRepository<DocumentDTO> {
             Document documentModele = document.toModele();
             entityManager.getTransaction().begin();
             if(get(documentModele.getId()) != null){
-                entityManager.merge(document);
+                entityManager.merge(documentModele);
             }
             else {
                 entityManager.persist(documentModele);

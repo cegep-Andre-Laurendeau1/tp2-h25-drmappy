@@ -43,6 +43,7 @@ public class EmprunteurService {
 
     public void saveExemplaire(int nmbreExemplaire, Long idDocument) {
         DocumentDTO document = documentRepository.get(idDocument);
+        document.setDocumentID(idDocument);
         document.setNombreExemplaire(nmbreExemplaire);
         documentRepository.save(document);
     }
