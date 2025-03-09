@@ -69,13 +69,30 @@ public class EmpruntRepositoryJPA implements InterfaceRepository<EmpruntDTO> {
             List<Emprunt> resultList = query.getResultList();
             entityManager.getTransaction().commit();
             for (Emprunt emprunt : resultList) {
+                System.out.println(emprunt);
+                emprunt.setEmpruntDetails(getEmpruntDetails(emprunt));
                 empruntDTOS.add(emprunt.toEmpruntDTO());
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         return empruntDTOS;
+    }
+
+    private List<EmpruntDetails> getEmpruntDetails(Emprunt emprunt) {
+        try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
+            entityManager.getTransaction().begin();
+            TypedQuery<EmpruntDetails> query = entityManager.createQuery(
+                    "SELECT empruntDetails FROM EmpruntDetails empruntDetails " +
+                            "WHERE empruntDetails.emprunt = :emprunt", EmpruntDetails.class);
+            query.setParameter("emprunt", emprunt);
+            List<EmpruntDetails> resultList = query.getResultList();
+            entityManager.getTransaction().commit();
+            return resultList;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     @Override

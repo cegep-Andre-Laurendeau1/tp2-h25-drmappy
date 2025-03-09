@@ -38,7 +38,6 @@ public class Emprunteur extends Utilisateur {
                 ", email='" + getEmail() + '\'' +
                 ", numTelephone='" + getNumTelephone() + '\'' +
                 "amendes=" + amendes +
-                ", emprunts=" + emprunts +
                 '}';
     }
 }

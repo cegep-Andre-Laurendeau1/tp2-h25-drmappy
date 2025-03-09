@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -14,6 +15,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 public class Emprunt {
     @Id
     @GeneratedValue
@@ -38,6 +40,7 @@ public class Emprunt {
     }
     public EmpruntDTO toEmpruntDTO() {
         List<EmpruntDetailsDTO> empruntDetailsDTO = new ArrayList<>();
+        System.out.println(empruntDetails);
         for (EmpruntDetails empruntDetails : this.empruntDetails) {
             empruntDetailsDTO.add(empruntDetails.toEmpruntDetailsDTO());
         }

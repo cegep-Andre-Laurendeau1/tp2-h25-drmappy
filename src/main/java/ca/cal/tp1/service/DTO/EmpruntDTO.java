@@ -49,4 +49,7 @@ public class EmpruntDTO {
                 ", empruntDetails=" + empruntDetails +
                 '}';
     }
+    public void setEmpruntDetails(List<EmpruntDetailsDTO> empruntDetails) {
+        this.empruntDetails = empruntDetails;
+    }
 }

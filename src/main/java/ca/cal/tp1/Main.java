@@ -73,18 +73,17 @@ public class Main {
 
         List<Long> list2 = new ArrayList<>();
         list2.add(2L);
-        list2.add(3L); //this one is added twice
+        list2.add(3L);
         emprunteurServiceJPA.emprunterDocument(list2, 1L);
-        //creates a new document still
 
-//        list2.add(4L);
-//        emprunteurServiceJPA.emprunterDocument(list2, 1L);
+        list2.add(4L);
+        emprunteurServiceJPA.emprunterDocument(list2, 1L);
 
         System.out.println("################################");
         System.out.println("#Section getDocumentsEmprunteur#");
         System.out.println("################################");
         //creates new emprunt
-        //emprunteurServiceJPA.getDocumentsEmprunteur(1L);
+        emprunteurServiceJPA.getDocumentsEmprunteur(1L);
 
         System.out.println("########################");
         System.out.println("#Section getDocumentFin#");

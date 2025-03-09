@@ -1,5 +1,6 @@
 package ca.cal.tp1.service;
 
+import ca.cal.tp1.modele.Document;
 import ca.cal.tp1.modele.Emprunt;
 import ca.cal.tp1.service.DTO.*;
 import ca.cal.tp1.persistance.InterfaceRepository;
@@ -97,10 +98,7 @@ public class EmprunteurService {
         List<EmpruntDTO> emprunts = empruntRepository.get(emprunteur);
 
         for (EmpruntDTO emprunt : emprunts) {
-            System.out.println(emprunt);
             List<EmpruntDetailsDTO> empruntDetails = empruntDetailsRepository.get(emprunt);
-
-            System.out.println(empruntDetails.toArray().length);
             for (EmpruntDetailsDTO empruntDetail : empruntDetails) {
                 System.out.println(empruntDetail);
             }
