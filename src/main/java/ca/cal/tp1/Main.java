@@ -53,7 +53,6 @@ public class Main {
         System.out.println("########################");
         System.out.println("#Section saveExemplaire#");
         System.out.println("########################");
-        //this adds new documents
         emprunteurServiceJPA.saveExemplaire(30, 1L);
         emprunteurServiceJPA.saveExemplaire(30, 2L);
 
@@ -68,15 +67,15 @@ public class Main {
         System.out.println("###########################");
         System.out.println("#Section emrpunterDocument#");
         System.out.println("###########################");
-//        List<Long> list1 = new ArrayList<>();
-//        list1.add(1L);
-//        emprunteurServiceJPA.emprunterDocument(list1, 1L);
+        List<Long> list1 = new ArrayList<>();
+        list1.add(1L);
+        emprunteurServiceJPA.emprunterDocument(list1, 1L);
 
-//        List<Long> list2 = new ArrayList<>();
-//        list2.add(2L);
-//        list2.add(3L);
-//        emprunteurServiceJPA.emprunterDocument(list2, 1L);
-        //creates a new document
+        List<Long> list2 = new ArrayList<>();
+        list2.add(2L);
+        list2.add(3L); //this one is added twice
+        emprunteurServiceJPA.emprunterDocument(list2, 1L);
+        //creates a new document still
 
 //        list2.add(4L);
 //        emprunteurServiceJPA.emprunterDocument(list2, 1L);

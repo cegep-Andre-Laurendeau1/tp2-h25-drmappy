@@ -12,8 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 public class Cd extends Document{
-    @Id
-    @GeneratedValue
     private Long id;
     private String artiste;
     private int duree;

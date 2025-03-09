@@ -13,10 +13,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Livre extends Document {
-    @Id
-    @GeneratedValue
     private Long id;
-
     private String ISBN;
     private String auteur;
     private String editeur;

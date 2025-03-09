@@ -4,15 +4,15 @@ import ca.cal.tp1.service.DTO.DvdDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
+@AllArgsConstructor
 public class Dvd extends Document{
-    @Id
-    @GeneratedValue
     private Long id;
     private String directeur;
     private int duree;
@@ -20,8 +20,7 @@ public class Dvd extends Document{
     private final int dureeEmpruntSem = 1;
 
     public Dvd(Long id, String titre, LocalDate anneePublication, int nombreExemplaire, String directeur, int duree, String genre) {
-        super(titre, anneePublication, nombreExemplaire);
-        this.id = id;
+        super(id, titre, anneePublication, nombreExemplaire);
         this.directeur = directeur;
         this.duree = duree;
         this.genre = genre;

@@ -41,8 +41,6 @@ public class EmpruntDetailsDTO {
     }
 
     public EmpruntDetails toModele() {
-        System.out.println(this.document);
-        System.out.println(this.document.toModele());
         return new EmpruntDetails(this.dateRetourPrevue, this.dateRetourActuelle, this.status, this.document.toModele());
     }
 

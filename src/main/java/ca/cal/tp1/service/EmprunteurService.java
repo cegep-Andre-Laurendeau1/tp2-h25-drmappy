@@ -82,7 +82,6 @@ public class EmprunteurService {
 
         EmpruntDTO emprunt = new EmpruntDTO(aujourdhui, "nouveau", empruntDetails, emprunteur);
         for (int i = 0; i < idDocuments.toArray().length; i++) {
-
             DocumentDTO documentCourant = documentRepository.get(idDocuments.get(i));
             documentCourant.setDocumentID(idDocuments.get(i));
             if (documentCourant.getNombreExemplaire() <= 0)
