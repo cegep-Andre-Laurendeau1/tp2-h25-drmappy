@@ -1,5 +1,6 @@
 package ca.cal.tp1.persistance;
 
+import ca.cal.tp1.exceptions.DatabaseException;
 import ca.cal.tp1.service.DTO.DocumentDTO;
 import ca.cal.tp1.service.DTO.EmpruntDTO;
 import ca.cal.tp1.service.DTO.EmprunteurDTO;
@@ -21,19 +22,18 @@ public class DocumentRepositoryJPA implements InterfaceRepository<DocumentDTO> {
         try(EntityManager entityManager = entityManagerFactory.createEntityManager()){
             Document documentModele = document.toModele();
             entityManager.getTransaction().begin();
-            if(get(documentModele.getId()) != null){
+            try{
+                get(documentModele.getId());
                 entityManager.merge(documentModele);
-            }
-            else {
+            }catch (DatabaseException e){
                 entityManager.persist(documentModele);
             }
-
             entityManager.getTransaction().commit();
         }
     }
 
     @Override
-    public DocumentDTO get(Long id){
+    public DocumentDTO get(Long id) throws DatabaseException {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Document> query = entityManager.createQuery(
@@ -44,8 +44,7 @@ public class DocumentRepositoryJPA implements InterfaceRepository<DocumentDTO> {
             entityManager.getTransaction().commit();
             return query.getSingleResult().toDTO();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            throw new DatabaseException("No document found with id: " + id);
         }
     }
 

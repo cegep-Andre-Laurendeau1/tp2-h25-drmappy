@@ -90,6 +90,7 @@ public class Main {
         System.out.println(emprunteurServiceJPA.getDocument(1L));
         System.out.println(emprunteurServiceJPA.getDocument(2L));
         System.out.println(emprunteurServiceJPA.getDocument(3L));
+        System.out.println(emprunteurServiceJPA.getDocument(470L));
 
         Thread.currentThread().join();
     }
