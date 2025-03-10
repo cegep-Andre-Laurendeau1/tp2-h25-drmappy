@@ -41,6 +41,9 @@ public class EmpruntDetailsDTO {
     }
 
     public EmpruntDetails toModele() {
+        if(this.document == null) {
+            return new EmpruntDetails(this.dateRetourPrevue, this.dateRetourActuelle, this.status);
+        }
         return new EmpruntDetails(this.dateRetourPrevue, this.dateRetourActuelle, this.status, this.document.toModele());
     }
 

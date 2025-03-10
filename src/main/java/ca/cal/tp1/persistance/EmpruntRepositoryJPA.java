@@ -4,9 +4,9 @@ import ca.cal.tp1.modele.*;
 import ca.cal.tp1.service.DTO.EmpruntDTO;
 import ca.cal.tp1.service.DTO.EmpruntDetailsDTO;
 import ca.cal.tp1.service.DTO.EmprunteurDTO;
-import ca.cal.tp1.service.DTO.UtilisateurDTO;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.TypedQuery;
 
@@ -30,10 +30,15 @@ public class EmpruntRepositoryJPA implements InterfaceRepository<EmpruntDTO> {
             for (EmpruntDetailsDTO detailsDTO : emprunt.getEmpruntDetails()) {
                 EmpruntDetails empruntDetailsCourant = detailsDTO.toModele();
                 Document documentCourant = empruntDetailsCourant.getDocument();
-                documentCourant.setNombreExemplaire(documentCourant.getNombreExemplaire() - 1);
-                Document mergedDocument = entityManager.merge(documentCourant);
-                EmpruntDetails empruntDetails = new EmpruntDetails(empruntDetailsCourant.getDateRetourPrevue(), empruntDetailsCourant.getDateRetourActuelle(), empruntDetailsCourant.getStatus(), empruntSansDetails, mergedDocument);
-                entityManager.persist(empruntDetails);
+                if (documentCourant != null) {
+                    documentCourant.setNombreExemplaire(documentCourant.getNombreExemplaire() - 1);
+                    Document mergedDocument = entityManager.merge(documentCourant);
+                    EmpruntDetails empruntDetails = new EmpruntDetails(empruntDetailsCourant.getDateRetourPrevue(), empruntDetailsCourant.getDateRetourActuelle(), empruntDetailsCourant.getStatus(), empruntSansDetails, mergedDocument);
+                    entityManager.persist(empruntDetails);
+                    empruntSansDetails.addEmpruntDetails(empruntDetails); // Ensure EmpruntDetails is added to Emprunt
+                } else {
+                    throw new IllegalArgumentException("Document cannot be null");
+                }
             }
             entityManager.getTransaction().commit();
         }
@@ -47,9 +52,14 @@ public class EmpruntRepositoryJPA implements InterfaceRepository<EmpruntDTO> {
                     "SELECT emprunt FROM Emprunt emprunt " +
                             "WHERE emprunt.id = :id", Emprunt.class);
             query.setParameter("id", id);
-            query.getSingleResult();
+            Emprunt emprunt = null;
+            try {
+                emprunt = query.getSingleResult();
+            } catch (NoResultException e) {
+                System.out.println("No emprunt found with id: " + id);
+            }
             entityManager.getTransaction().commit();
-            return query.getSingleResult().toEmpruntDTO();
+            return emprunt != null ? emprunt.toEmpruntDTO() : null;
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -79,19 +89,18 @@ public class EmpruntRepositoryJPA implements InterfaceRepository<EmpruntDTO> {
         return empruntDTOS;
     }
 
-    private List<EmpruntDetails> getEmpruntDetails(Emprunt emprunt) {
+    public List<EmpruntDetails> getEmpruntDetails(Emprunt emprunt) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             entityManager.getTransaction().begin();
             TypedQuery<EmpruntDetails> query = entityManager.createQuery(
-                    "SELECT empruntDetails FROM EmpruntDetails empruntDetails " +
-                            "WHERE empruntDetails.emprunt = :emprunt", EmpruntDetails.class);
+                    "SELECT ed FROM EmpruntDetails ed WHERE ed.emprunt = :emprunt", EmpruntDetails.class);
             query.setParameter("emprunt", emprunt);
             List<EmpruntDetails> resultList = query.getResultList();
             entityManager.getTransaction().commit();
             return resultList;
         } catch (Exception e) {
             e.printStackTrace();
-            return null;
+            return new ArrayList<>();
         }
     }
 

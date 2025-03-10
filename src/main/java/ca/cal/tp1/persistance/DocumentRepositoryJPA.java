@@ -33,7 +33,7 @@ public class DocumentRepositoryJPA implements InterfaceRepository<DocumentDTO> {
     }
 
     @Override
-    public DocumentDTO get(Long id) {
+    public DocumentDTO get(Long id){
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
             TypedQuery<Document> query = entityManager.createQuery(

@@ -56,4 +56,8 @@ public class Emprunt {
 
                 '}';
     }
+
+    public void addEmpruntDetails(EmpruntDetails empruntDetails) {
+        this.empruntDetails.add(empruntDetails);
+    }
 }

@@ -82,7 +82,6 @@ public class Main {
         System.out.println("################################");
         System.out.println("#Section getDocumentsEmprunteur#");
         System.out.println("################################");
-        //creates new emprunt
         emprunteurServiceJPA.getDocumentsEmprunteur(1L);
 
         System.out.println("########################");

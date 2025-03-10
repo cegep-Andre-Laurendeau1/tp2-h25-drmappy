@@ -34,10 +34,10 @@ public class EmpruntDetailsRepositoryJPA implements InterfaceRepository<EmpruntD
             EmpruntDetails empruntDetails = empruntDetailsDTO.toModele();
             empruntDetails.setEmprunt(emprunt); // Set the saved or merged Emprunt instance
 
-            if (get(empruntDetailsDTO.getId()) != null) {
-                entityManager.merge(empruntDetails);
+            if (empruntDetails.getId() == null) {
+                entityManager.persist(empruntDetails); // Save the new EmpruntDetails instance
             } else {
-                entityManager.persist(empruntDetails);
+                entityManager.merge(empruntDetails); // Merge the detached EmpruntDetails instance
             }
 
             entityManager.getTransaction().commit();
@@ -52,9 +52,9 @@ public class EmpruntDetailsRepositoryJPA implements InterfaceRepository<EmpruntD
                     "SELECT EmpruntDetails FROM EmpruntDetails EmpruntDetails " +
                             "WHERE EmpruntDetails.id = :id", EmpruntDetails.class);
             query.setParameter("id", id);
-            query.getSingleResult();
+            EmpruntDetails empruntDetails = query.getSingleResult();
             entityManager.getTransaction().commit();
-            return query.getSingleResult().toEmpruntDetailsDTO();
+            return empruntDetails.toEmpruntDetailsDTO();
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -69,10 +69,11 @@ public class EmpruntDetailsRepositoryJPA implements InterfaceRepository<EmpruntD
                             "WHERE EmpruntDetails.emprunt = :emprunt", EmpruntDetails.class);
 
             query.setParameter("emprunt", emprunt);
+            List<EmpruntDetails> resultList = query.getResultList();
             entityManager.getTransaction().commit();
             List<EmpruntDetailsDTO> empruntDetailsDTOS = new ArrayList<>();
-            for (int i = 0; i < query.getResultList().toArray().length; i++) {
-                empruntDetailsDTOS.add(query.getResultList().get(i).toEmpruntDetailsDTO());
+            for (EmpruntDetails details : resultList) {
+                empruntDetailsDTOS.add(details.toEmpruntDetailsDTO());
             }
             return empruntDetailsDTOS;
         } catch (Exception e) {
@@ -111,19 +112,28 @@ public class EmpruntDetailsRepositoryJPA implements InterfaceRepository<EmpruntD
         List<EmpruntDetailsDTO> e = new ArrayList<>();
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()){
             entityManager.getTransaction().begin();
-            Emprunt empruntEntity = emprunt.toModele();
-            if (empruntEntity.getId() == null) {
-                entityManager.persist(empruntEntity); // Ensure Emprunt is saved if it is new
+            Emprunt empruntModele = emprunt.toModele();
+            if (empruntModele.getId() == null) {
+                entityManager.persist(empruntModele); // Ensure Emprunt is saved if it is new
             } else {
-                empruntEntity = entityManager.merge(empruntEntity); // Merge the detached Emprunt instance
+                empruntModele = entityManager.merge(empruntModele); // Merge the detached Emprunt instance
             }
             TypedQuery<EmpruntDetails> query = entityManager.createQuery(
                     "SELECT EmpruntDetails FROM EmpruntDetails EmpruntDetails " +
                             "WHERE EmpruntDetails.emprunt = :emprunt", EmpruntDetails.class);
-            query.setParameter("emprunt", empruntEntity);
+            query.setParameter("emprunt", empruntModele);
+            for (int i = 0; i < empruntModele.getEmpruntDetails().toArray().length; i++) {
+                EmpruntDetails empruntDetails = empruntModele.getEmpruntDetails().get(i);
+                if (empruntDetails.getId() == null) {
+                    entityManager.persist(empruntDetails); // Ensure EmpruntDetails is saved if it is new
+                } else {
+                    empruntDetails = entityManager.merge(empruntDetails); // Merge the detached EmpruntDetails instance
+                }
+            }
+            List<EmpruntDetails> resultList = query.getResultList();
             entityManager.getTransaction().commit();
-            for (int i = 0; i < query.getResultList().toArray().length; i++) {
-                e.add(query.getResultList().get(i).toEmpruntDetailsDTO());
+            for (EmpruntDetails details : resultList) {
+                e.add(details.toEmpruntDetailsDTO());
             }
         } catch (Exception ex) {
             ex.printStackTrace();
